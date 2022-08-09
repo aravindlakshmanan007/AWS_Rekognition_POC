@@ -59,14 +59,14 @@ Build your application with the `sam build --use-container` command.
 AWSRegonition$ sam build --use-container
 ```
 
-The SAM CLI installs dependencies defined in `hello_world/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
+The SAM CLI installs dependencies defined in `AWSRegonition/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
 
 Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
 
 Run functions locally and invoke them with the `sam local invoke` command.
 
 ```bash
-AWSRegonition$ sam local invoke HelloWorldFunction --event events/event.json
+AWSRegonition$ sam local invoke AWSRekognitionFunction --event events/event.json
 ```
 
 ## Cleanup
@@ -83,5 +83,3 @@ aws cloudformation delete-stack --stack-name AWSRegonition
 ## Resources
 
 See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for an introduction to SAM specification, the SAM CLI, and serverless application concepts.
-
-Next, you can use AWS Serverless Application Repository to deploy ready to use Apps that go beyond hello world samples and learn how authors developed their applications: [AWS Serverless Application Repository main page](https://aws.amazon.com/serverless/serverlessrepo/)
