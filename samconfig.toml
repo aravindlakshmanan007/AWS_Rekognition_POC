@@ -1,0 +1,12 @@
+version = 0.1
+[dataaws]
+[dataaws.deploy]
+[dataaws.deploy.parameters]
+stack_name = "sam-app"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1e11066r2jr7o"
+s3_prefix = "sam-app"
+region = "us-east-1"
+profile = "dataaws"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
