@@ -54,12 +54,36 @@ def stop_model(model_arn):
 
     print('Done...')
 
+def write_dynamodb(rekognition_responses):
+    # Write the prediction to dynamodb
+    client = boto3.client('dynamodb')
+    try:
+        for response in rekognition_responses:
+            data = client.put_item(
+                TableName=os.environ['dynamo_table_name'],
+                Item={
+                    'key': {
+                        'S': response['Key']
+                    },
+                    'predicted': {
+                        'S': str(response['Response'][0]['Name'])
+                    },
+                    # 'response': {
+                    #     'L': response['Response']
+                    # },
+                    'label_count': {
+                        'N': str(response['Label_Count'])
+                    }
+                }
+            )
+    except Exception as e:
+        raise e
+
 def lambda_handler(event, context):
     project_arn = os.environ['project_arn']
     model_arn =os.environ['model_arn']
     try:
         s3_records = event['Records']
-        print(s3_records)
         # Start Model
         min_inference_units=1
         version_name= os.environ['version_name']
@@ -79,14 +103,18 @@ def lambda_handler(event, context):
             })
             print("Custom labels detected: " + str(label_count))
 
+        # Write to DynamoDB
+        write_dynamodb(responses)
+        print(f"Successfully inserted to Dynamodb")
+
         output = {
             "statusCode": 200,
             "body": json.dumps({
-                "response": responses
+                "response": responses,
+                "write_to_dynamodb": "Success"
             }),
         }
-
-        print(f"Predictions: {output}")
+        print(output)
         return output
     except Exception as e:
         raise e

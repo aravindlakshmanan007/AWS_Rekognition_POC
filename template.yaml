@@ -6,7 +6,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 600
+    Timeout: 900
 
 Resources:
   AWSRekognitionFunction:
@@ -18,11 +18,13 @@ Resources:
       Policies:
         - AmazonS3FullAccess
         - AmazonRekognitionFullAccess
+        - AmazonDynamoDBFullAccess
       Environment:
         Variables:
           project_arn: arn:aws:rekognition:us-east-1:659440378738:project/Image_Detection/1659803008052
           model_arn: arn:aws:rekognition:us-east-1:659440378738:project/Image_Detection/version/Image_Detection.2022-08-06T21.54.26/1659803066289
           version_name: Image_Detection.2022-08-06T21.54.26
+          dynamo_table_name: !Ref DynamoTable
       Architectures:
         - x86_64
       Events:
@@ -31,6 +33,14 @@ Resources:
           Properties:
             Bucket: !Ref SrcBucket
             Events: s3:ObjectCreated:*
+
+  DynamoTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: key
+        Type: String
+      TableName: rekognition_predicted
 
   SrcBucket:
     Type: AWS::S3::Bucket
